@@ -1,1 +1,853 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="format-detection" content="telephone=no">
 <title>CallerPe — Get paid for spam calls</title>
+<meta name="description" content="CallerPe blocks unknown calls, makes callers stake ₹14, and lets you keep the stake when the call is spam. Join early access for ₹49, credited back at launch.">
+<meta name="theme-color" content="#071018">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+
+<!-- Update the og:image URL to the final deployed domain before going live -->
+<meta property="og:title" content="CallerPe — Get paid for spam calls">
+<meta property="og:description" content="See how CallerPe blocks unknown calls, collects a ₹14 caller stake, and pays you when the call is spam. Early access open — ₹49 credited at launch.">
+<meta property="og:image" content="https://www.callerpe.in/assets/og-card.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.callerpe.in/">
+
+<!--
+  Meta Pixel (required before running this page as an Instagram ad destination).
+  Paste your Pixel base code from Events Manager here. The page JS already calls
+  fbq('track','Lead') on form submit and fbq('track','Purchase',{value:49,currency:'INR'})
+  on payment confirmation — they no-op until the pixel is installed.
+-->
+
+<style>
+:root{
+  --navy:#071018; --navy-hi:#0d2842; --white:#fafcff; --muted:#a8c0d6;
+  --gold:#f2ba52; --gold-deep:#a06c1e; --red:#ee4852; --green:#38d68d; --ink:#101824;
+  --card:rgba(13,40,66,.5); --line:rgba(242,186,82,.15);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+  background:var(--navy); color:var(--white);
+  font-family:-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  font-size:17px; line-height:1.55; overflow:hidden;
+}
+[hidden]{display:none!important}
+a{color:var(--gold);text-decoration:none}
+img{max-width:100%;display:block}
+::selection{background:var(--gold);color:var(--ink)}
+
+.wrap{width:min(600px,92vw);margin:0 auto;position:relative;z-index:2}
+.wide{width:min(600px,92vw);margin:0 auto;position:relative;z-index:2}
+
+/* guided scroll: one full-screen scene per gesture */
+.scenes{height:100vh;height:100dvh;overflow-y:auto;overflow-x:clip;
+  scroll-snap-type:y mandatory;scroll-behavior:smooth;-webkit-overflow-scrolling:touch}
+section{position:relative;overflow:hidden;padding:72px 0;
+  min-height:100vh;min-height:100dvh;
+  display:flex;flex-direction:column;justify-content:center;
+  scroll-snap-align:start;scroll-snap-stop:always}
+
+/* glow blobs */
+.blob{position:absolute;border-radius:50%;pointer-events:none;z-index:1;
+  animation:drift 18s ease-in-out infinite alternate}
+.blob.gold{background:radial-gradient(circle,rgba(242,186,82,.16),transparent 65%)}
+.blob.blue{background:radial-gradient(circle,rgba(56,120,190,.15),transparent 65%)}
+@keyframes drift{from{transform:translate(-4%,-3%) scale(1)}to{transform:translate(5%,4%) scale(1.12)}}
+
+/* brand */
+.brand{display:flex;align-items:center;gap:10px;color:var(--white)}
+.brand img{width:34px;height:34px}
+.brand b{font-weight:900;letter-spacing:.04em;font-size:.9rem}
+
+/* type */
+.kicker{color:var(--gold);font-weight:800;font-size:.8rem;letter-spacing:.28em;margin-bottom:18px}
+h1{font-weight:900;font-size:clamp(2.7rem,11vw,5rem);line-height:.98;letter-spacing:-.02em}
+h2.head{font-weight:900;font-size:clamp(1.8rem,6.5vw,2.8rem);line-height:1.08;letter-spacing:-.015em}
+.sub{color:var(--muted);margin-top:18px;max-width:34em}
+
+/* buttons */
+.btn{display:inline-block;font-weight:800;font-size:1.05rem;border:0;cursor:pointer;
+  border-radius:999px;padding:17px 34px;background:var(--gold);color:var(--ink);
+  box-shadow:0 10px 44px rgba(242,186,82,.35);
+  transition:transform .18s ease,box-shadow .18s ease;font-family:inherit}
+.btn:hover{transform:translateY(-2px) scale(1.02);box-shadow:0 14px 56px rgba(242,186,82,.45)}
+.btn:active{transform:scale(.98)}
+.btn[disabled]{opacity:.6;cursor:wait;transform:none}
+.btn-block{display:block;width:100%;text-align:center}
+.btn-pulse{animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.02)}}
+.micro{color:var(--muted);font-size:.85rem;margin-top:12px}
+.linkish{background:none;border:0;color:var(--gold);font:inherit;font-size:.9rem;cursor:pointer;padding:0}
+
+/* hero */
+#hero{padding:120px 0 80px}
+.hero-stage{opacity:0;transform:translateY(26px) scale(.96);
+  transition:opacity .5s ease,transform .6s cubic-bezier(.34,1.56,.64,1)}
+.hero-stage.in{opacity:1;transform:none}
+
+/* reveal on scroll */
+.reveal{opacity:0;transform:translateY(30px) scale(.98);
+  transition:opacity .6s ease,transform .7s cubic-bezier(.34,1.56,.64,1)}
+.reveal.in{opacity:1;transform:none}
+
+/* offer */
+.offer-card{background:linear-gradient(160deg,rgba(13,40,66,.65),rgba(7,16,28,.4));
+  border:1px solid rgba(242,186,82,.3);border-radius:26px;padding:clamp(26px,5vw,44px);
+  box-shadow:0 30px 90px rgba(0,0,0,.4)}
+.price-row{display:flex;align-items:baseline;gap:14px;margin:22px 0 6px;flex-wrap:wrap}
+.price{font-weight:900;font-size:clamp(3rem,12vw,4.4rem);color:var(--gold);
+  text-shadow:0 0 30px rgba(242,186,82,.4);line-height:1}
+.price-note{color:var(--muted);font-weight:600}
+.perks{list-style:none;margin:26px 0 34px;display:grid;gap:14px}
+.perks li{display:flex;gap:12px;align-items:flex-start}
+.perks svg{flex:none;margin-top:3px}
+.perks b{display:block}
+.perks span{color:var(--muted);font-size:.92rem}
+
+/* form */
+.panel h3{font-weight:900;font-size:1.45rem;margin-bottom:18px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:.82rem;font-weight:700;color:var(--muted);
+  letter-spacing:.06em;margin-bottom:6px}
+.field input{width:100%;background:#0a1a2c;border:1px solid rgba(168,192,214,.25);
+  border-radius:12px;color:var(--white);font-size:16px;font-family:inherit;padding:14px 16px;
+  transition:border-color .15s}
+.field input:focus{outline:none;border-color:var(--gold)}
+.phone-wrap{display:flex;align-items:stretch}
+.phone-wrap .cc{display:flex;align-items:center;padding:0 14px;background:#0a1a2c;
+  border:1px solid rgba(168,192,214,.25);border-right:0;border-radius:12px 0 0 12px;
+  color:var(--muted);font-weight:700;font-size:16px}
+.phone-wrap input{border-radius:0 12px 12px 0}
+.form-error{color:var(--red);font-size:.9rem;font-weight:600;margin:10px 0 0;min-height:1.3em}
+.hp{position:absolute;left:-5000px;top:-5000px;opacity:0;height:0;overflow:hidden}
+
+/* pay panel */
+.pay-note{background:rgba(242,186,82,.08);border:1px solid var(--line);border-radius:14px;
+  padding:14px 16px;font-size:.92rem;color:var(--muted);margin-bottom:20px}
+.pay-note b{color:var(--white)}
+.vpa-row{display:flex;gap:10px;align-items:center;margin:18px 0;flex-wrap:wrap}
+.vpa-chip{background:#0a1a2c;border:1px dashed rgba(242,186,82,.45);border-radius:12px;
+  padding:12px 16px;font-weight:700;letter-spacing:.02em;flex:1;min-width:200px;
+  user-select:all;-webkit-user-select:all}
+.pay-apps{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.pay-app{text-align:center;background:#0a1a2c;border:1px solid rgba(168,192,214,.3);border-radius:8px;
+  color:var(--white);font-weight:800;font-size:.92rem;padding:14px 8px}
+.pay-steps{list-style:none;counter-reset:ps;display:grid;gap:12px;margin:18px 0 4px}
+.pay-steps li{counter-increment:ps;display:flex;gap:12px;align-items:flex-start;color:var(--muted);font-size:.95rem}
+.pay-steps li::before{content:counter(ps);flex:none;width:26px;height:26px;border-radius:50%;
+  border:1px solid var(--gold);color:var(--gold);font-weight:900;font-size:.8rem;
+  display:flex;align-items:center;justify-content:center}
+.pay-steps b{color:var(--white)}
+.copy-btn{background:transparent;border:1px solid var(--line);color:var(--gold);font:inherit;
+  font-weight:700;font-size:.85rem;border-radius:999px;padding:10px 18px;cursor:pointer;
+  transition:background .15s}
+.copy-btn:hover{background:rgba(242,186,82,.1)}
+.divider{display:flex;align-items:center;gap:14px;color:var(--muted);font-size:.82rem;
+  font-weight:700;letter-spacing:.15em;margin:26px 0 18px}
+.divider::before,.divider::after{content:"";flex:1;height:1px;background:rgba(168,192,214,.18)}
+
+/* success */
+.done-mark{width:84px;height:84px;border-radius:50%;background:rgba(56,214,141,.12);
+  border:2px solid var(--green);display:flex;align-items:center;justify-content:center;margin-bottom:22px}
+.badge-note{display:inline-flex;align-items:center;gap:8px;background:rgba(242,186,82,.1);
+  border:1px solid var(--line);border-radius:999px;padding:8px 16px;font-size:.85rem;
+  font-weight:700;color:var(--gold);margin-top:20px}
+
+/* faq */
+.faq details{border-bottom:1px solid rgba(168,192,214,.15)}
+.faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;gap:16px;
+  align-items:center;font-weight:800;font-size:1.02rem;padding:20px 2px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";color:var(--gold);font-weight:900;font-size:1.5rem;
+  transition:transform .2s;flex:none;line-height:1}
+.faq details[open] summary::after{transform:rotate(45deg)}
+.faq details p{color:var(--muted);font-size:.95rem;padding:0 2px 20px;max-width:56ch}
+
+/* footer */
+footer{border-top:1px solid rgba(168,192,214,.12);padding:44px 0 120px;color:var(--muted);font-size:.88rem;
+  min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;justify-content:center;
+  scroll-snap-align:start;scroll-snap-stop:always}
+footer .brand{margin-bottom:16px}
+footer p{max-width:60ch;margin-bottom:10px}
+
+/* sticky mobile cta */
+.stickybar{position:fixed;left:0;right:0;bottom:0;z-index:90;
+  padding:22px 16px calc(12px + env(safe-area-inset-bottom));
+  background:linear-gradient(transparent,rgba(7,16,28,.92) 40%);
+  transform:translateY(110%);transition:transform .35s ease}
+.stickybar.show{transform:none}
+.stickybar .btn{max-width:min(600px,92vw);margin-inline:auto}
+
+/* launch polish */
+:root{
+  --paper:#f7f9fc; --paper-2:#eef4f8; --blue:#105b8f; --blue-deep:#09233a;
+  --stone:#536678; --soft-line:rgba(9,35,58,.12);
+}
+body{background:var(--paper);color:var(--ink)}
+.blob{display:none}
+.btn{border-radius:8px}
+.btn.secondary{
+  background:transparent;color:var(--white);border:1px solid rgba(250,252,255,.24);
+  box-shadow:none;
+}
+.btn.secondary:hover{background:rgba(250,252,255,.08);box-shadow:none}
+.reveal{opacity:1;transform:translateY(18px);transition:transform .55s ease}
+.reveal.in{transform:none}
+#hero{
+  padding:40px 0 34px;
+  color:var(--white);
+  background:
+    linear-gradient(180deg,rgba(7,16,28,.98) 0%,rgba(7,16,28,.94) 55%,rgba(9,35,58,.92) 100%),
+    radial-gradient(circle at 80% 20%,rgba(242,186,82,.14),transparent 36%);
+}
+.hero-brand{justify-content:center;margin-bottom:18px}
+.hero-brand img{width:60px;height:60px}
+.hero-brand b{font-size:1.2rem}
+.hero-title{
+  font-size:clamp(4.1rem,12vw,8.6rem);
+  letter-spacing:0;
+  line-height:.84;
+  margin-bottom:18px;
+}
+.hero-promise{
+  font-size:clamp(2rem,5.4vw,4rem);
+  line-height:.96;
+  font-weight:900;
+  letter-spacing:0;
+  max-width:10ch;
+  margin-bottom:20px;
+}
+.hero-actions{display:flex;gap:14px;align-items:center;justify-content:center;flex-wrap:wrap;margin-top:22px}
+.hero-actions .btn{width:100%;text-align:center}
+.hero-visual{display:flex;justify-content:center;margin-top:30px}
+.phone-shell{
+  width:min(315px,92vw);
+  border:1px solid rgba(250,252,255,.18);
+  border-radius:34px;
+  padding:12px;
+  background:linear-gradient(160deg,#050a0f,#101a24);
+  box-shadow:0 36px 100px rgba(0,0,0,.5);
+}
+.phone-screen{
+  min-height:500px;
+  border-radius:26px;
+  overflow:hidden;
+  background:linear-gradient(180deg,#f7f9fc,#eaf0f5);
+  color:var(--ink);
+  padding:18px;
+  display:flex;
+  flex-direction:column;
+}
+.phone-top{display:flex;align-items:center;gap:10px;font-weight:900;font-size:.8rem;letter-spacing:.08em;color:var(--blue-deep)}
+.phone-top img{width:30px;height:30px}
+.incoming{margin-top:46px}
+.incoming small{display:block;color:var(--stone);font-weight:800;letter-spacing:.14em;margin-bottom:10px}
+.incoming h3{font-size:2.1rem;line-height:1;font-weight:900;letter-spacing:0;color:var(--blue-deep)}
+.number{color:var(--stone);font-weight:800;margin-top:8px}
+.gate-box{margin-top:26px;border:1px solid var(--soft-line);border-radius:8px;background:#fff;padding:18px}
+.gate-row{display:flex;justify-content:space-between;gap:18px;border-bottom:1px solid var(--soft-line);padding:12px 0;font-size:.94rem}
+.gate-row:first-child{padding-top:0}
+.gate-row:last-child{border-bottom:0;padding-bottom:0}
+.gate-row span{color:var(--stone);font-weight:800}
+.gate-row b{color:var(--blue-deep);text-align:right}
+.phone-cta{margin-top:auto;background:var(--gold);color:var(--ink);font-weight:900;text-align:center;border-radius:8px;padding:15px}
+#app,#paid,#trust,#faq{background:var(--paper);color:var(--ink)}
+#paid{background:var(--paper-2)}
+#app .kicker,#paid .kicker,#trust .kicker,#faq .kicker{color:var(--blue)}
+#app .sub,#paid .sub,#trust .sub,#faq .sub{color:var(--stone)}
+#offer{background:var(--navy);color:var(--white)}
+.offer-card{border-radius:8px}
+.pay-note,.vpa-chip,.field input,.phone-wrap .cc{border-radius:8px}
+.phone-wrap .cc{border-radius:8px 0 0 8px}
+.phone-wrap input{border-radius:0 8px 8px 0}
+.copy-btn,.badge-note{border-radius:8px}
+.panel-note{color:var(--muted);font-size:.92rem;margin:-8px 0 20px}
+.faq summary{color:var(--blue-deep)}
+footer{background:var(--navy);color:var(--muted);padding-bottom:72px}
+.stickybar .btn{box-shadow:0 10px 54px rgba(242,186,82,.45)}
+/* Instagram-first app demo */
+.app-hero .hero-title{font-size:clamp(2.6rem,13vw,3.4rem);max-width:7.8ch;text-align:center;margin-inline:auto}
+.app-hero .hero-promise{font-size:clamp(1.6rem,8vw,2.1rem);max-width:16ch;color:var(--gold);text-align:center;margin-inline:auto}
+.app-hero .sub{font-size:1rem;text-align:center;margin-inline:auto}
+.app-hero .micro{text-align:center}
+.app-screen{background:#f7f9fc;color:var(--ink)}
+.app-top{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:.82rem;color:#5a6a76;font-weight:800}
+.app-top b{color:var(--blue-deep);font-size:.98rem}
+.app-top.dark{border-bottom:1px solid var(--soft-line);padding-bottom:14px;margin-bottom:20px}
+.app-alert{margin-top:22px;background:#fff;border:1px solid var(--soft-line);border-radius:14px;padding:16px;box-shadow:0 16px 36px rgba(9,35,58,.08)}
+.app-alert small,.screen-title{display:block;color:var(--blue);font-weight:900;letter-spacing:.14em;font-size:.74rem;text-transform:uppercase;margin-bottom:10px}
+.app-alert h3{font-size:1.9rem;line-height:.98;color:var(--blue-deep);letter-spacing:0}
+.app-alert p,.screen-note{color:var(--stone);font-weight:700;margin-top:10px}
+.stake-card{margin-top:18px;background:linear-gradient(160deg,#09233a,#123e61);color:var(--white);border-radius:14px;padding:22px}
+.stake-card span,.balance-card span{display:block;color:#b8c9d8;font-weight:800;font-size:.82rem;letter-spacing:.08em;text-transform:uppercase}
+.stake-card strong,.balance-card strong{display:block;color:var(--gold);font-size:3.5rem;line-height:.98;font-weight:900;letter-spacing:0}
+.stake-card em,.balance-card em{display:block;color:#dbe7f0;font-style:normal;font-weight:800}
+.stake-card.compact strong{font-size:3.4rem}
+.app-list{margin-top:18px;background:#fff;border:1px solid var(--soft-line);border-radius:14px;overflow:hidden}
+.app-list div{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 16px;border-bottom:1px solid var(--soft-line);font-weight:800}
+.app-list div:last-child{border-bottom:0}
+.app-list span{color:var(--stone)}
+.app-list b{color:var(--blue-deep);text-align:right}
+#app{background:#fff;color:var(--ink)}
+.section-lead{max-width:760px}
+.screen-row{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;
+  -webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;
+  gap:14px;margin-top:28px;padding-bottom:10px;scrollbar-width:none;
+  margin-inline:-4vw;padding-inline:4vw}
+.screen-row::-webkit-scrollbar{display:none}
+.swipe-hint{color:var(--stone);font-weight:800;font-size:.85rem;margin-top:18px}
+.mini-phone{flex:0 0 min(80%,340px);scroll-snap-align:center;border-radius:30px;background:linear-gradient(160deg,#050a0f,#101824);padding:10px;box-shadow:0 28px 80px rgba(9,35,58,.18)}
+.mini-screen{min-height:500px;border-radius:22px;background:#f7f9fc;color:var(--ink);padding:20px;display:flex;flex-direction:column;overflow:hidden}
+.big-number{font-size:2rem;line-height:1;font-weight:900;color:var(--blue-deep);letter-spacing:0;margin:16px 0 4px}
+.call-summary{display:grid;grid-template-columns:1fr auto;gap:12px;margin:20px 0;background:#fff;border:1px solid var(--soft-line);border-radius:14px;padding:16px}
+.call-summary span{color:var(--stone);font-weight:800}
+.call-summary b{color:var(--blue-deep);text-align:right}
+.app-action{width:100%;border:0;border-radius:10px;padding:15px 16px;margin-top:10px;font:inherit;font-weight:900;cursor:default}
+.app-action.refund{background:#e8f2f9;color:var(--blue-deep)}
+.app-action.spam{background:var(--gold);color:var(--ink)}
+.balance-card{background:linear-gradient(160deg,#09233a,#105b8f);border-radius:18px;padding:24px;margin-top:18px;color:var(--white)}
+.balance-card strong{font-size:4.2rem}
+.payout-list b{color:#129163}
+#paid{background:var(--paper-2);color:var(--ink)}
+.payout-steps{border-top:1px solid var(--soft-line);margin-top:36px}
+.payout-step{display:grid;grid-template-columns:58px 1fr;gap:22px;padding:26px 0;border-bottom:1px solid var(--soft-line)}
+.payout-step > span{width:42px;height:42px;border-radius:10px;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900}
+.payout-step b{display:block;color:var(--blue-deep);font-size:1.2rem;margin-bottom:5px}
+.payout-step p{color:var(--stone);margin:0}
+.trust-band{background:#071018;color:var(--white);border-radius:0;margin-inline:-4vw;padding:34px 22px}
+.trust-band .head{color:var(--white)}
+.trust-list{list-style:none;display:grid;grid-template-columns:1fr;gap:14px;margin-top:28px}
+.trust-list li{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:16px;font-weight:900}
+</style>
+</head>
+<body>
+
+<div class="scenes">
+
+<!-- HERO -->
+<section id="hero">
+  <div class="wide hero-grid app-hero">
+    <div class="hero-copy">
+      <div class="brand hero-brand hero-stage">
+        <img src="assets/callerpe-logo.png" alt="CallerPe logo">
+        <b>CALLERPE</b>
+      </div>
+      <h1 class="hero-title hero-stage">Get paid for spam calls.</h1>
+      <h2 class="hero-promise hero-stage">₹14 a spammer. Straight to UPI.</h2>
+      <p class="sub hero-stage">CallerPe blocks unknown callers until they stake ₹14 to ring you. Genuine call? They get it back. Spam? You keep it. Your contacts always ring free.</p>
+      <div class="hero-actions hero-stage">
+        <a class="btn btn-pulse" href="#offer">Claim founder spot — ₹49</a>
+        <a class="btn secondary" href="#paid">See how payout works</a>
+      </div>
+      <p class="micro hero-stage">The ₹49 founder deposit is credited back in full at launch — effectively free. Refunded if we don't launch.</p>
+    </div>
+    <div class="hero-visual hero-stage">
+      <div class="phone-shell">
+        <div class="phone-screen app-screen screen-gate">
+          <div class="app-top">
+            <span>9:41</span>
+            <b>CallerPe</b>
+            <span>₹0</span>
+          </div>
+          <div class="app-alert">
+            <small>UNKNOWN CALL BLOCKED</small>
+            <h3>+91 8••• ••• 419</h3>
+            <p>Payment link sent before your phone rang.</p>
+          </div>
+          <div class="stake-card">
+            <span>Caller must stake</span>
+            <strong>₹14</strong>
+            <em>to ring you again</em>
+          </div>
+          <div class="app-list">
+            <div><span>Contacts</span><b>Allowed</b></div>
+            <div><span>Unknown unpaid</span><b>Blocked</b></div>
+            <div><span>Paid caller</span><b>Temporary pass</b></div>
+          </div>
+          <div class="phone-cta">Payment link sent</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- APP PREVIEW -->
+<section id="app">
+  <div class="wide">
+    <div class="section-lead reveal">
+      <p class="kicker">WHAT THE APP DOES</p>
+      <h2 class="head">Three screens. That's the whole app.</h2>
+      <p class="sub">Unknown call blocked. You decide spam or genuine. The money lands in your CallerPe balance and withdraws to UPI.</p>
+      <p class="swipe-hint">Swipe the screens →</p>
+    </div>
+    <div class="screen-row reveal">
+      <div class="mini-phone">
+        <div class="mini-screen">
+          <div class="app-top dark"><span>9:41</span><b>CallerPe</b><span>₹0</span></div>
+          <div class="screen-title">Unknown call blocked</div>
+          <div class="big-number">+91 8••• ••• 419</div>
+          <div class="screen-note">Caller received payment link by SMS.</div>
+          <div class="stake-card compact"><span>Required stake</span><strong>₹14</strong><em>before retry</em></div>
+          <div class="phone-cta">No ring. No disturbance.</div>
+        </div>
+      </div>
+      <div class="mini-phone">
+        <div class="mini-screen">
+          <div class="app-top dark"><span>9:43</span><b>Call ended</b><span>₹14</span></div>
+          <div class="screen-title">Was this spam?</div>
+          <div class="call-summary">
+            <span>Duration</span><b>18 sec</b>
+            <span>Caller stake</span><b>₹14 held</b>
+          </div>
+          <button class="app-action refund" type="button">Refund caller</button>
+          <button class="app-action spam" type="button">Mark spam · keep ₹14</button>
+          <p class="screen-note">Refund is default. You act only when it was spam.</p>
+        </div>
+      </div>
+      <div class="mini-phone">
+        <div class="mini-screen">
+          <div class="app-top dark"><span>9:45</span><b>Balance</b><span>UPI</span></div>
+          <div class="balance-card">
+            <span>Available balance</span>
+            <strong>₹126</strong>
+            <em>from spam calls</em>
+          </div>
+          <div class="app-list payout-list">
+            <div><span>Loan offer</span><b>+₹14</b></div>
+            <div><span>Fake policy call</span><b>+₹14</b></div>
+            <div><span>Genuine recruiter</span><b>Refunded</b></div>
+          </div>
+          <div class="phone-cta">Withdraw to UPI</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GET PAID -->
+<section id="paid">
+  <div class="wide payout-grid">
+    <div class="reveal">
+      <p class="kicker">HOW YOU GET PAID</p>
+      <h2 class="head">Spam money lands in your CallerPe balance.</h2>
+      <p class="sub">A genuine caller should not lose money. A spammer should not get free access to your phone.</p>
+    </div>
+    <div class="payout-steps reveal">
+      <div class="payout-step">
+        <span>01</span>
+        <div><b>Unknown caller is blocked.</b><p>Your contacts and allowlist ring normally. Everyone else gets challenged.</p></div>
+      </div>
+      <div class="payout-step">
+        <span>02</span>
+        <div><b>Caller stakes ₹14.</b><p>They pay before they can retry. This creates a cost for spam callers.</p></div>
+      </div>
+      <div class="payout-step">
+        <span>03</span>
+        <div><b>You decide after the call.</b><p>Genuine call? Refund. Spam call? Mark spam and keep the stake.</p></div>
+      </div>
+      <div class="payout-step">
+        <span>04</span>
+        <div><b>Withdraw to UPI.</b><p>Your spam-call earnings collect in CallerPe balance and can be withdrawn.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST -->
+<section id="trust">
+  <div class="wide trust-band reveal">
+    <div>
+      <p class="kicker">USER FIRST</p>
+      <h2 class="head">No one can buy access to disturb you.</h2>
+    </div>
+    <ul class="trust-list">
+      <li>No paid business bypass.</li>
+      <li>No contact or call-log sales.</li>
+      <li>Refund is the default for genuine callers.</li>
+      <li>You control contacts and allowlist.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- OFFER + FORM -->
+<section id="offer">
+  <div class="blob gold" style="width:60vmax;height:60vmax;top:-20vmax;left:-28vmax;animation-delay:-5s"></div>
+  <div class="wrap">
+    <div class="offer-card reveal">
+      <p class="kicker">EARLY ACCESS</p>
+      <h2 class="head">Be in the first batch when we go live.</h2>
+      <div class="price-row">
+        <span class="price">₹49</span>
+        <span class="price-note">one-time · credited in full at launch</span>
+      </div>
+      <p class="panel-note">₹49 is your founder deposit — not the caller's ₹14 stake. The full amount is credited to your CallerPe balance when the app launches.</p>
+      <ul class="perks">
+        <li>
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3.2 3.2L13 5" stroke="#f2ba52" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div><b>₹49 balance on day one</b><span>Your full founder deposit lands in your CallerPe balance when the app launches.</span></div>
+        </li>
+        <li>
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3.2 3.2L13 5" stroke="#f2ba52" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div><b>First-batch access</b><span>We roll out in batches. Founders get in before the public.</span></div>
+        </li>
+        <li>
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3.2 3.2L13 5" stroke="#f2ba52" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div><b>Founder badge</b><span>An early-supporter badge on your profile, permanently.</span></div>
+        </li>
+      </ul>
+
+      <!-- STEP 1: claim form -->
+      <div class="panel" id="panel-claim">
+        <h3>Reserve your founder spot</h3>
+        <form id="claimForm" novalidate>
+          <div class="field">
+            <label for="f-name">NAME</label>
+            <input id="f-name" name="name" type="text" autocomplete="name" placeholder="Your name" required>
+          </div>
+          <div class="field">
+            <label for="f-phone">MOBILE NUMBER</label>
+            <div class="phone-wrap">
+              <span class="cc">+91</span>
+              <input id="f-phone" name="phone" type="tel" inputmode="numeric" autocomplete="tel-national"
+                     maxlength="10" placeholder="10-digit mobile number" required>
+            </div>
+          </div>
+          <div class="field">
+            <label for="f-email">EMAIL <span style="font-weight:400">(optional)</span></label>
+            <input id="f-email" name="email" type="email" autocomplete="email" placeholder="you@example.com">
+          </div>
+          <div class="hp" aria-hidden="true">
+            <label>Website<input name="website" type="text" tabindex="-1" autocomplete="off"></label>
+          </div>
+          <p class="form-error" id="claimError" role="alert"></p>
+          <button class="btn btn-block" type="submit" id="claimBtn">Continue to ₹49 payment →</button>
+          <p class="micro" style="text-align:center">Your number is used only for early-access updates. Never sold, never shared.</p>
+        </form>
+      </div>
+
+      <!-- STEP 2: pay -->
+      <div class="panel" id="panel-pay" hidden>
+        <h3>Pay ₹49 to lock it in</h3>
+        <p class="pay-note">Spot held for <b id="payPhone"></b>. Pay with any UPI app — GPay, PhonePe, Paytm, BHIM.</p>
+        <div id="payDirect">
+          <a class="btn btn-block btn-pulse" id="upiBtn" href="#">Pay ₹49 with UPI</a>
+          <p class="micro" style="text-align:center">Credited back in full at launch · refunded if CallerPe doesn't launch.</p>
+        </div>
+
+        <div id="payIab" hidden>
+          <div class="pay-apps">
+            <a class="pay-app" id="payGpay" href="#">GPay</a>
+            <a class="pay-app" id="payPhonepe" href="#">PhonePe</a>
+            <a class="pay-app" id="payPaytm" href="#">Paytm</a>
+          </div>
+          <p class="micro" style="text-align:center">Nothing opened? Instagram's browser blocks UPI apps — pay manually below, it takes 30 seconds.</p>
+          <ol class="pay-steps">
+            <li><span><b>Copy our UPI ID</b> below.</span></li>
+            <li><span><b>Open your UPI app</b> and send <b>₹49</b> — put your mobile number in the note.</span></li>
+            <li><span><b>Come back here</b> and enter the transaction ID (UTR).</span></li>
+          </ol>
+          <p class="micro" style="text-align:center">Credited back in full at launch · refunded if CallerPe doesn't launch. Prefer Chrome? Tap ⋯ top-right → “Open in external browser”.</p>
+        </div>
+
+        <div class="divider" id="manualDivider">OR PAY MANUALLY</div>
+        <div class="vpa-row">
+          <span class="vpa-chip" id="vpaText"></span>
+          <button class="copy-btn" id="vpaCopy" type="button">Copy UPI ID</button>
+        </div>
+        <p class="micro">Amount <b>₹49</b> · add your mobile number in the payment note so we can match it.</p>
+        <div class="divider">PAID? CONFIRM IT</div>
+        <form id="confirmForm" novalidate>
+          <div class="field">
+            <label for="f-utr">UPI TRANSACTION ID (UTR)</label>
+            <input id="f-utr" name="utr" type="text" inputmode="text" autocomplete="off"
+                   placeholder="e.g. 415223867512">
+          </div>
+          <p class="micro" style="margin:0 0 14px">Find it in your UPI app under the payment's details.</p>
+          <p class="form-error" id="confirmError" role="alert"></p>
+          <button class="btn btn-block" type="submit" id="confirmBtn">Confirm my payment</button>
+        </form>
+        <p style="margin-top:18px;text-align:center"><button class="linkish" id="backBtn" type="button">‹ change my details</button></p>
+        <p class="micro" style="text-align:center">If CallerPe does not launch, every founder deposit is refunded in full.</p>
+      </div>
+
+      <!-- STEP 3: done -->
+      <div class="panel" id="panel-done" hidden>
+        <div class="done-mark">
+          <svg width="40" height="40" viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3.2 3.2L13 5" stroke="#38d68d" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h3>You're in, founder.</h3>
+        <p class="sub" style="margin-top:0">Spot reserved for <b id="donePhone" style="color:var(--white)"></b>.
+          We match payments within 24 hours and you'll get a confirmation.
+          Your ₹49 will be waiting in your balance at launch.</p>
+        <span class="badge-note">★ FOUNDER #EARLY</span>
+        <p style="margin-top:26px"><a class="btn" id="igBtn" href="#" target="_blank" rel="noopener">Follow @callerpe for launch updates</a></p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="wrap">
+    <div class="reveal">
+      <p class="kicker">QUESTIONS</p>
+      <h2 class="head">Before you pay ₹49, read this.</h2>
+    </div>
+    <div class="faq reveal" style="margin-top:28px">
+      <details>
+        <summary>Will my friends and family have to pay to call me?</summary>
+        <p>No. Anyone in your contacts — and anyone you allow — rings through normally, every time.
+           Only unknown numbers are gated behind the ₹14 stake.</p>
+      </details>
+      <details>
+        <summary>What exactly happens to my ₹49?</summary>
+        <p>It reserves your founder spot today, and the full ₹49 is credited to your CallerPe balance
+           when the app launches. If CallerPe doesn't launch, every founder deposit is refunded.</p>
+      </details>
+      <details>
+        <summary>Is ₹49 the same as the ₹14 caller stake?</summary>
+        <p>No. ₹49 is your founder deposit. ₹14 is the refundable stake
+           that unknown callers put up when they want to reach you after launch.</p>
+      </details>
+      <details>
+        <summary>Is CallerPe live today?</summary>
+        <p>Not yet. This is the founder waitlist for the first Android rollout. Early members help
+           validate demand before we open the app to a wider batch.</p>
+      </details>
+      <details>
+        <summary>Who decides if a call was spam?</summary>
+        <p>You do. The refund is the default — the caller automatically gets their ₹14 back unless
+           you mark the call as spam. Genuine callers never lose money.</p>
+      </details>
+      <details>
+        <summary>When do I get access?</summary>
+        <p>We're rolling out in batches, founders first. You'll get a message on the number you
+           registered when your batch opens. Follow our Instagram for progress updates.</p>
+      </details>
+      <details>
+        <summary>What do you do with my number?</summary>
+        <p>Waitlist and early access only. We don't sell your data, and nobody can pay us to reach you —
+           that's the whole point of CallerPe.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="brand">
+      <img src="assets/callerpe-logo.png" alt="CallerPe logo">
+      <b>CALLERPE</b>
+    </div>
+    <p>Spam calls end here. Unknown callers stake ₹14 before your phone rings — genuine callers
+       get refunded, spammers pay you.</p>
+    <p>The ₹49 founder deposit is a one-time payment, credited in full to your CallerPe balance at
+       launch, and refunded in full if CallerPe does not launch.</p>
+    <p>© 2026 CallerPe · <a href="https://www.callerpe.in">callerpe.in</a> · <a id="igFoot" href="#" target="_blank" rel="noopener">Instagram</a></p>
+  </div>
+</footer>
+
+</div><!-- /.scenes -->
+
+<div class="stickybar" id="stickybar">
+  <a class="btn btn-block" href="#offer">Claim founder spot — ₹49</a>
+</div>
+
+<script>
+/* ================= CONFIG — edit these four lines ================= */
+const CONFIG = {
+  SCRIPT_URL: "https://script.google.com/macros/s/AKfycbzL9w-OR6POU4iLujhhLAfsu07PUf69za_R2spPu1ptMiFI-tVTFsd2VsMm_JjF2i7b/exec",                    // Google Apps Script /exec URL (see landing/README.md). Empty = demo mode.
+  UPI_VPA:    "mukz@icici",        // Replace with the real UPI ID that receives payments before go-live.
+  UPI_PAYEE:  "CallerPe",
+  INSTAGRAM:  "https://www.instagram.com/callerpe"  // Confirm this handle before go-live.
+};
+const AMOUNT = "49";
+/* ================================================================== */
+
+const $ = s => document.querySelector(s);
+
+/* Instagram / Facebook in-app browser detection */
+const UA = navigator.userAgent || "";
+const IS_IAB = /instagram|fban|fbav|fb_iab/i.test(UA);
+const IS_ANDROID = /android/i.test(UA);
+
+/* wire config into the DOM */
+$("#vpaText").textContent = CONFIG.UPI_VPA;
+$("#igBtn").href = CONFIG.INSTAGRAM;
+$("#igFoot").href = CONFIG.INSTAGRAM;
+
+/* hero staggered entrance */
+document.querySelectorAll(".hero-stage").forEach((el, i) =>
+  setTimeout(() => el.classList.add("in"), 180 + i * 190));
+
+/* reveal on scroll */
+const revealEls = Array.from(document.querySelectorAll(".reveal"));
+if ("IntersectionObserver" in window) {
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
+    });
+  }, { threshold: .12, rootMargin: "0px 0px -8% 0px" });
+  revealEls.forEach(el => io.observe(el));
+  setTimeout(() => revealEls.forEach(el => el.classList.add("in")), 1000);
+} else {
+  revealEls.forEach(el => el.classList.add("in"));
+}
+
+/* sticky mobile CTA: show everywhere except hero, offer, and success */
+(() => {
+  const bar = $("#stickybar");
+  let heroIn = true, offerIn = false, doneShown = false;
+  const update = () => bar.classList.toggle("show", !heroIn && !offerIn && !doneShown);
+  new IntersectionObserver(es => { es.forEach(e => heroIn = e.isIntersecting); update(); }, { threshold: .05 }).observe($("#hero"));
+  new IntersectionObserver(es => { es.forEach(e => offerIn = e.isIntersecting); update(); }, { threshold: .05 }).observe($("#offer"));
+  window.__hideSticky = v => { doneShown = v; update(); };
+})();
+
+/* copy UPI id — async clipboard first, execCommand fallback for webviews */
+async function copyText(text) {
+  try { await navigator.clipboard.writeText(text); return true; } catch (_) {}
+  try {
+    const ta = document.createElement("textarea");
+    ta.value = text; ta.style.cssText = "position:fixed;opacity:0";
+    document.body.appendChild(ta); ta.select();
+    const ok = document.execCommand("copy");
+    ta.remove(); return ok;
+  } catch (_) { return false; }
+}
+$("#vpaCopy").addEventListener("click", async () => {
+  const b = $("#vpaCopy"); const t = b.dataset.label || (b.dataset.label = b.textContent);
+  const ok = await copyText(CONFIG.UPI_VPA);
+  b.textContent = ok ? "Copied!" : "Long-press the ID to copy";
+  setTimeout(() => b.textContent = t, 1800);
+});
+
+/* ---------- waitlist flow ---------- */
+let lead = null;
+try { lead = JSON.parse(localStorage.getItem("cp_lead") || "null"); } catch (_) {}
+
+function saveLead() { try { localStorage.setItem("cp_lead", JSON.stringify(lead)); } catch (_) {} }
+
+async function post(data) {
+  if (!CONFIG.SCRIPT_URL) {
+    console.log("[CallerPe demo mode] would submit:", data);
+    await new Promise(r => setTimeout(r, 450));
+    return { ok: true };
+  }
+  try {
+    const res = await fetch(CONFIG.SCRIPT_URL, { method: "POST", body: new URLSearchParams(data) });
+    return await res.json();
+  } catch (_) {
+    return { ok: false, error: "network" };
+  }
+}
+
+function upiQuery(phone) {
+  const tn = encodeURIComponent("CallerPe early access " + phone);
+  return "pay?pa=" + CONFIG.UPI_VPA + "&pn=" + encodeURIComponent(CONFIG.UPI_PAYEE) +
+         "&am=" + AMOUNT + "&cu=INR&tn=" + tn;
+}
+function upiLink(phone) { return "upi://" + upiQuery(phone); }
+/* Android intent: URLs survive webviews better than bare upi:// */
+function intentLink(pkg, phone) {
+  return "intent://" + upiQuery(phone) + "#Intent;scheme=upi;package=" + pkg + ";end";
+}
+
+function showPanel(name) {
+  ["claim", "pay", "done"].forEach(k => $("#panel-" + k).hidden = (k !== name));
+  window.__hideSticky && window.__hideSticky(name === "done");
+}
+function enterPay() {
+  $("#payPhone").textContent = "+91 " + lead.phone;
+  if (IS_IAB) {
+    $("#payDirect").hidden = true;
+    $("#payIab").hidden = false;
+    $("#manualDivider").textContent = "OUR UPI ID";
+    if (IS_ANDROID) {
+      $("#payGpay").href    = intentLink("com.google.android.apps.nbu.paisa.user", lead.phone);
+      $("#payPhonepe").href = intentLink("com.phonepe.app", lead.phone);
+      $("#payPaytm").href   = intentLink("net.one97.paytm", lead.phone);
+    } else {
+      $("#payGpay").href    = "tez://upi/" + upiQuery(lead.phone);
+      $("#payPhonepe").href = "phonepe://" + upiQuery(lead.phone);
+      $("#payPaytm").href   = "paytmmp://" + upiQuery(lead.phone);
+    }
+  } else {
+    $("#upiBtn").href = upiLink(lead.phone);
+  }
+  showPanel("pay");
+}
+function enterDone() {
+  $("#donePhone").textContent = "+91 " + lead.phone;
+  showPanel("done");
+}
+
+function setBusy(btn, busy, busyText) {
+  if (busy) { btn.dataset.label = btn.textContent; btn.textContent = busyText; btn.disabled = true; }
+  else { btn.textContent = btn.dataset.label || btn.textContent; btn.disabled = false; }
+}
+
+/* restore prior state */
+if (lead && lead.stage === "done") enterDone();
+else if (lead && lead.stage === "pay") enterPay();
+
+/* step 1: claim */
+$("#claimForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  const err = $("#claimError"); err.textContent = "";
+  const name = $("#f-name").value.trim();
+  const email = $("#f-email").value.trim();
+  let phone = $("#f-phone").value.replace(/\D/g, "");
+  if (phone.length === 12 && phone.startsWith("91")) phone = phone.slice(2);
+  if (phone.length === 11 && phone.startsWith("0")) phone = phone.slice(1);
+
+  if (name.length < 2) { err.textContent = "Please enter your name."; return; }
+  if (!/^[6-9]\d{9}$/.test(phone)) { err.textContent = "Enter a valid 10-digit Indian mobile number."; return; }
+
+  const btn = $("#claimBtn"); setBusy(btn, true, "Reserving…");
+  const res = await post({ action: "claim", name, phone, email,
+                           website: document.querySelector('[name="website"]').value });
+  setBusy(btn, false);
+  if (!res.ok) { err.textContent = "Couldn't reach the server — please try again."; return; }
+
+  lead = { name, phone, email, stage: "pay" }; saveLead();
+  if (window.fbq) fbq("track", "Lead");
+  enterPay();
+  $("#offer").scrollIntoView({ behavior: "smooth" });
+});
+
+/* step 2: confirm payment */
+$("#confirmForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  const err = $("#confirmError"); err.textContent = "";
+  const utr = $("#f-utr").value.trim();
+  if (!/^[A-Za-z0-9]{6,22}$/.test(utr)) {
+    err.textContent = "That doesn't look like a transaction ID — check your UPI app's payment details.";
+    return;
+  }
+  const btn = $("#confirmBtn"); setBusy(btn, true, "Confirming…");
+  const res = await post({ action: "confirm", phone: lead.phone, utr });
+  setBusy(btn, false);
+  if (!res.ok) { err.textContent = "Couldn't reach the server — please try again."; return; }
+
+  lead.stage = "done"; saveLead();
+  if (window.fbq) fbq("track", "Purchase", { value: 49, currency: "INR" });
+  enterDone();
+});
+
+/* back to edit details */
+$("#backBtn").addEventListener("click", () => {
+  $("#f-name").value = lead.name || "";
+  $("#f-phone").value = lead.phone || "";
+  $("#f-email").value = lead.email || "";
+  showPanel("claim");
+});
+</script>
+</body>
+</html>
